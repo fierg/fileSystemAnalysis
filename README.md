@@ -17,6 +17,6 @@ detailed analysis and benchmarks of different file systems
 
 ### Links
 
-- (raid comparrison)[https://www.phoronix.com/scan.php?page=article&item=linux_raid_fs4&num=5]
+- [raid comparrison](https://www.phoronix.com/scan.php?page=article&item=linux_raid_fs4&num=5)
 
 
