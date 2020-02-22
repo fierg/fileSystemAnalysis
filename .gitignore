@@ -1,0 +1,17 @@
+.idea/*
+*.iml
+*.aux
+*.idx
+*.log
+*.lof
+*.lot
+*.out
+*.toc
+*.gz
+*.synctex.gz
+*.bbl
+*.blg
+*.cls
+*.loc
+*.nav
+*.snm
