@@ -15,4 +15,8 @@ detailed analysis and benchmarks of different file systems
 0.09user 1.81system 1:18.09elapsed 2%CPU (0avgtext+0avgdata 2944maxresident)k
 0inputs+1439256outputs (0major+193minor)pagefaults 0swaps
 
+### Links
+
+- (raid comparrison)[https://www.phoronix.com/scan.php?page=article&item=linux_raid_fs4&num=5]
+
 
