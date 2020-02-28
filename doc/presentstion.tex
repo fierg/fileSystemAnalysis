@@ -11,9 +11,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage[]{csquotes}
 \usepackage{amsmath}
-
+\usepackage{outlines}
 \usepackage[backend=biber]{biblatex}
-\bibliography{thesis.bib}
+\addbibresource{thesis.bib}
 
 % Removes icon in bibliography
 \setbeamertemplate{bibliography item}{}
@@ -31,7 +31,7 @@
 %\usetikzlibrary{positioning}
 %\usepackage{wrapfig}
 %\usepackage{pgfplots}
-%\usepackage{outlines}
+
 %\usepackage{mathtools}
 %\usepackage{xcolor}
 %\usepackage{amsfonts}
@@ -88,12 +88,20 @@
 }
 
 \section{btrfs}
-\frame{\frametitle{btrfs}
-
+{\usebackgroundtemplate{%
+		\hspace*{9cm}\includegraphics[width=.3\paperwidth,height=.3\paperheight]{img/btrfs.jpg}} 
+\frame{\frametitle{btrfs - Einleitung}
+	\begin{outline}
+		\1 Full name:	B-tree file system
+		\visible<2->{\1 Introduced in:	Linux kernel 2.6.29, March 2009}
+		\visible<3->{\1 Developed by: 	Facebook, Fujitsu, Fusion-IO, Intel, Linux Foundation, Netgear, Oracle Corporation, Red Hat, STRATO AG, SUSE, ...}
+	\end{outline}
 }
 
 \frame{\frametitle{btrfs - Struktur}
-	
+	\begin{outline}
+		\1 
+	\end{outline}
 }
 
 \frame{\frametitle{btrfs - CoW}
@@ -102,7 +110,7 @@
 
 \frame{\frametitle{btrfs - RAID}
 	
-}
+}}
 
 \section{F2FS}
 \frame{\frametitle{F2FS}
