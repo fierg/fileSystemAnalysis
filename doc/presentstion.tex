@@ -12,33 +12,22 @@
 \usepackage[]{csquotes}
 \usepackage{amsmath}
 \usepackage{outlines}
-\usepackage[backend=biber]{biblatex}
-\addbibresource{thesis.bib}
+\usepackage{graphicx}
+\usepackage{multimedia}
+\usepackage{media9}
 
-% Removes icon in bibliography
+
+\usepackage[backend=biber]{biblatex}
+\bibliography{thesis.bib}
 \setbeamertemplate{bibliography item}{}
 \nocite{*}
 
-%\usepackage{tikz, wasysym}
-%\usepackage{graphicx}
-%\usetikzlibrary{automata,positioning}
-%\usepackage{hyperref}
-%\usepackage{amsfonts}
-%\usepackage{csquotes}
-%\usepackage{tikz}
-%\usetikzlibrary{arrows}
-%\usetikzlibrary{arrows.meta}
-%\usetikzlibrary{positioning}
-%\usepackage{wrapfig}
-%\usepackage{pgfplots}
-
-%\usepackage{mathtools}
-%\usepackage{xcolor}
-%\usepackage{amsfonts}
-%\usepackage{amssymb}
-%\usepackage{makeidx}
-%\usepackage{graphicx}
-
+\hypersetup{
+	pdfauthor={Sven Fiergolla, Tobias Dahlem},
+	pdftitle={btrfs \& F2FS vs. ext4},
+	pdfsubject={filesystems},
+	pdfkeywords={Not set}
+}
 
 \usepackage{hyperref}
 \author{Sven Fiergolla \& Tobias Dahlem}
@@ -51,7 +40,7 @@
 \begin{document}
 	
 \frame{\maketitle}
-\frame{\frametitle{}
+\frame{\frametitle{Übersicht}
 \tableofcontents
 }
 
@@ -92,25 +81,136 @@
 		\hspace*{9cm}\includegraphics[width=.3\paperwidth,height=.3\paperheight]{img/btrfs.jpg}} 
 \frame{\frametitle{btrfs - Einleitung}
 	\begin{outline}
-		\1 Full name:	B-tree file system
-		\visible<2->{\1 Introduced in:	Linux kernel 2.6.29, March 2009}
+		\1 B-tree file system
+		\2 basiert auf \enquote{B-trees, shadowing, and clones} by Ohad Rodeh \cite{rodeh2008b}
+		\visible<2->{\1 Introduced:	Linux kernel 2.6.29, March 2009}
 		\visible<3->{\1 Developed by: 	Facebook, Fujitsu, Fusion-IO, Intel, Linux Foundation, Netgear, Oracle Corporation, Red Hat, STRATO AG, SUSE, ...}
 	\end{outline}
 }
 
 \frame{\frametitle{btrfs - Struktur}
+	\only<1>{
+		\begin{figure}
+		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-design.jpg}
+	\end{figure}
+}
+\only<2>{
+	\begin{figure}
+		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-tree.png}
+	\end{figure}
+}}
+
+\frame{\frametitle{btrfs - Copy on Write (CoW)}
+	\only<1>{
+		\centering
+		Initiale Datei
+		\begin{figure}
+			\includegraphics[width=.8\textwidth, height=.7\textheight]{img/cow1.pdf}
+		\end{figure}}
+	\only<2>{
+		\begin{figure}
+			\centering
+			Initiale Datei und unveränderte Kopie
+			\includegraphics[width=.8\textwidth, height=.7\textheight]{img/cow2.pdf}
+		\end{figure}}
+	\only<3>{
+		\begin{figure}
+			\centering
+			Kopie erfährt Anderungen 
+			\includegraphics[width=.8\textwidth, height=.7\textheight]{img/cow3.pdf}
+		\end{figure}}
+	\only<4>{
+		\begin{figure}
+		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/cow4.pdf}
+		\end{figure}}
+}
+
+\frame{\frametitle{btrfs - Snapshots}
+	\begin{figure}
+		\includegraphics[width=.9\textwidth, height=.5\textheight]{img/btrfs-snapshot.png}
+	\end{figure}
+}
+
+\frame{\frametitle{btrfs - Data \& Metadata Checksum}
+		\begin{figure}
+		\includegraphics[width=.9\textwidth, height=.5\textheight]{img/bitrot.jpg}
+	\end{figure}
+}
+
+\frame{\frametitle{btrfs - Data \& Metadata Checksum}
 	\begin{outline}
-		\1 $B^{+}$ Baum von Inodes
+		\1 btrfs generiert für alle Dateien und Metadaten eine Prüfumme
+		\visible<2->{\1 Beim lesen eines defekten Extent, wird die Inkonsistenz der Prüfsummen festgestellt}
+		\visible<3->{\2 mit Mirroring, korrekte Kopie wird gelesen und Defekt wird ersetzt
+					 \2 ohne Mirroring, Extent wird verworfen und ein \emph{EIO} zurückgegeben}
+
+		\visible<4->{\1 Mit \emph{btrfs scrub} für ganzes Dateisystem möglich}
+	\end{outline}
+
+	\visible<5->{
+	\medskip
+	dmesg \\
+	\medskip
+	\medskip
+	\scriptsize
+	[ 1120.891229] verify\_parent\_transid: 43 callbacks suppressed \\
+	
+	
+	[ 1120.891243] parent transid verify failed on $16956989440$ wanted $13182$ found $12799$ \\
+	
+	
+	[ 1124.851937] parent transid verify failed on $16585043968$ wanted $13145$ found $12357$ \\
+	
+	
+	
+	[ 1124.885429] btrfs read error corrected: ino 1 off 16977842176 (dev /dev/sdd sector 2921768)\\
+	}
+}
+
+\frame{\frametitle{Redundant Array of Independent Disks (RAID)}
+	\begin{outline}
+		\1 Ermöglicht Organisation mehrerer Datenträger zu einem logischen Volume
+		\1 Erlaubt effizientes redundantes Speichern
+		\2 Rekonstruktion verlorener Daten bei Ausfall eines Dateiträgers
 	\end{outline}
 }
 
-\frame{\frametitle{btrfs - CoW}
-	
+\frame{\frametitle{btrfs - RAID}
+	\centering
+	Traditionelles RAID 0\\
+	\begin{figure}[h!]
+	\centering    
+	\movie[label=show3loop] {}{img/raid0.mp4}
+	\caption{caption}
+	\end{figure} 
 }
 
 \frame{\frametitle{btrfs - RAID}
+	\centering
+	Traditionelles RAID 1\\
+}
+
+\frame{\frametitle{btrfs - RAID}
+	\centering
+	btrfs RAID 1
+}
+
+\frame{\frametitle{btrfs - Weitere Features}
+	\begin{outline}
+		\1 Snapshots, read-only Snapshots
+		\1 btrfs RAID (raid0, raid1, raid10, raid5 \& raid6)
+		\visible<2->{
+		\1 Komprimierung auf Filesystem Ebene
+		\2 verfügbare Algorithmen: \emph{zlib, lzo \& zstd}
+		\visible<3->{
+		}
+	}
+	\end{outline}
+}
+
+\frame{\frametitle{btrfs - Nachteile}
 	
-}}
+}
 
 \section{F2FS}
 \frame{\frametitle{F2FS}
