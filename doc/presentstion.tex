@@ -15,6 +15,7 @@
 \usepackage{graphicx}
 \usepackage{multimedia}
 \usepackage{media9}
+\usepackage{verbatim}
 
 
 \usepackage[backend=biber]{biblatex}
@@ -173,27 +174,44 @@
 		\1 Erlaubt effizientes redundantes Speichern
 		\2 Rekonstruktion verlorener Daten bei Ausfall eines Dateiträgers
 	\end{outline}
+\visible<2->{Nachteile:
+\begin{outline}
+	\1 Fixe Plattengröße
+	\1 Modifizierung erfordert Restriping
+\end{outline}
+}
+
+}
+
+\frame{\frametitle{btrfs - RAID}
+	\begin{outline}
+		\1 RAID 0 (keine Parität) \&  1,5 (einfache Parität) \&  6 (mehrfache Parität)
+		\visible<2->{\1 Keine einheitliche Plattengröße}
+	\end{outline}
+}
+
+\frame[fragile=singleslide]{\frametitle{btrfs - RAID}
+		\begin{outline}
+			\1 RAID 0 (keine Parität) \&  1,5 (einfache Parität) \&  6 (mehrfache Parität)
+			\1 Keine einheitliche Plattengröße
+			\1 Dynamisches erweitern
+		\end{outline}
+	\verb|mkfs.btrfs -d <mode> -m <mode> <dev1> <dev2> ...| \\
+	\verb|mount /dev/<disk x> /<mount point>| \\
+	\verb|btrfs device add /dev/<disk y> /<mount point>|
 }
 
 \frame{\frametitle{btrfs - RAID}
 	\centering
 	Traditionelles RAID 0\\
 	\begin{figure}[h!]
-	\centering    
-	\movie[label=show3loop] {}{img/raid0.mp4}
-	\caption{caption}
+		\centering    
+		\movie[label=show3loop] {}{img/raid0.mp4}
+		\caption{caption}
 	\end{figure} 
 }
 
-\frame{\frametitle{btrfs - RAID}
-	\centering
-	Traditionelles RAID 1\\
-}
 
-\frame{\frametitle{btrfs - RAID}
-	\centering
-	btrfs RAID 1
-}
 
 \frame{\frametitle{btrfs - Weitere Features}
 	\begin{outline}
@@ -203,14 +221,26 @@
 		\1 Komprimierung auf Filesystem Ebene
 		\2 verfügbare Algorithmen: \emph{zlib, lzo \& zstd}
 		\visible<3->{
+		\1 Subvolumes
+		\2 eigene interne Dateisystem roots
 		}
 	}
 	\end{outline}
 }
 
 \frame{\frametitle{btrfs - Nachteile}
-	
-}
+	\begin{outline}
+		\1 $B^+$ Baum kann unbalanciert werden
+		\2 manuelles rebalancieren
+		\visible<2->{
+		\1 CoW Mechanismus führt zu Inkonsistenzen OLTP Workload, fragwürdig für Datenbanken
+	}
+\visible<3->{
+		\1 Berechnung des benötigten Speicherplatzes mit Snapshots
+		\2 $\text{btrfs filesystem df /}$ anstatt $\text{df /}$
+	}
+	\end{outline}
+}}
 
 \section{F2FS}
 \frame{\frametitle{F2FS}
