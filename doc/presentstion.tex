@@ -220,9 +220,12 @@
 		\visible<2->{
 		\1 Komprimierung auf Filesystem Ebene
 		\2 verfügbare Algorithmen: \emph{zlib, lzo \& zstd}
+		\2 \emph{mount -o compress /dev/sdx}
+		\2 \emph{btrfs filesystem defrag -r /path}
 		\visible<3->{
 		\1 Subvolumes
 		\2 eigene interne Dateisystem roots
+		\2 \emph{btrfs subvolume create <name>}
 		}
 	}
 	\end{outline}
