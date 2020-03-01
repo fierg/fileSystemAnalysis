@@ -12,10 +12,13 @@
 \usepackage[]{csquotes}
 \usepackage{amsmath}
 \usepackage{outlines}
-\usepackage{graphicx}
-\usepackage{multimedia}
-\usepackage{media9}
+%\usepackage{graphicx}
+%\usepackage{multimedia}
+%\usepackage{media9}
 \usepackage{verbatim}
+%\usepackage{animate}
+\usepackage{xmpmulti}
+\usepackage{animate}
 
 
 \usepackage[backend=biber]{biblatex}
@@ -25,14 +28,14 @@
 
 \hypersetup{
 	pdfauthor={Sven Fiergolla, Tobias Dahlem},
-	pdftitle={btrfs \& F2FS vs. ext4},
+	pdftitle={BtrFS \& F2FS},
 	pdfsubject={filesystems},
 	pdfkeywords={Not set}
 }
 
 \usepackage{hyperref}
 \author{Sven Fiergolla \& Tobias Dahlem}
-\title[]{btrfs \& F2FS vs. ext4}
+\title[]{btrFS \& F2FS}
 \subtitle[short version]{}
 \date{3. März 2020}
 %\institute[Uni Trier]{Universität Trier}
@@ -83,7 +86,7 @@
 \frame{\frametitle{btrfs - Einleitung}
 	\begin{outline}
 		\1 B-tree file system
-		\2 basiert auf \enquote{B-trees, shadowing, and clones} by Ohad Rodeh \cite{rodeh2008b}
+		\2 basiert auf \enquote{B-trees, shadowing, and clones} by Ohad Rodeh 
 		\visible<2->{\1 Introduced:	Linux kernel 2.6.29, March 2009}
 		\visible<3->{\1 Developed by: 	Facebook, Fujitsu, Fusion-IO, Intel, Linux Foundation, Netgear, Oracle Corporation, Red Hat, STRATO AG, SUSE, ...}
 	\end{outline}
@@ -92,7 +95,7 @@
 \frame{\frametitle{btrfs - Struktur}
 	\only<1>{
 		\begin{figure}
-		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-design.jpg}
+		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-design.png}
 	\end{figure}
 }
 \only<2>{
@@ -202,14 +205,17 @@
 }
 
 \frame{\frametitle{btrfs - RAID}
-	\centering
-	Traditionelles RAID 0\\
-	\begin{figure}[h!]
-		\centering    
-		\movie[label=show3loop] {}{img/raid0.mp4}
-		\caption{caption}
-	\end{figure} 
+	\animategraphics[loop,controls,width=.95\linewidth]{2}{img/raid-ani1/btrfs-raid-ani1-}{0}{99}
 }
+\frame{\frametitle{btrfs - RAID}
+	\animategraphics[loop,controls,width=.95\linewidth]{2}{img/raid-ani2/btrfs-raid-ani2-}{0}{99}
+}
+
+%\begin{frame}
+%	\transduration<0-99>{0}
+%	\multiinclude[<+->][format=png, graphics={width=\textwidth}]{img/btrfs-raid-ani1}
+%\end{frame}
+
 
 
 
@@ -225,7 +231,7 @@
 		\visible<3->{
 		\1 Subvolumes
 		\2 eigene interne Dateisystem roots
-		\2 \emph{btrfs subvolume create <name>}
+		\2 \emph{btrfs subvolume create \emph{name}}
 		}
 	}
 	\end{outline}
@@ -356,11 +362,8 @@
 	
 }
 
-\section{benchmarks}
-\frame{\frametitle{benchmarks}
-	
-}
-\frame{\frametitle{benchmarks - Results}
+\section{Benchmarks}
+\frame{\frametitle{Benchmarks - Results}
 		\begin{table}[h]
 	\begin{tabular}{r|r|r|r|r|r}
 
@@ -371,12 +374,7 @@
 }
 
 \frame{\frametitle{Literatur}
-
 \printbibliography[]
 }
-
-
-
-
 
 \end{document}
