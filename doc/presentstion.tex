@@ -20,6 +20,11 @@
 \usepackage{xmpmulti}
 \usepackage{animate}
 
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots}
 
 \usepackage[backend=biber]{biblatex}
 \bibliography{thesis.bib}
@@ -96,11 +101,6 @@
 	\only<1>{
 		\begin{figure}
 		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-design.png}
-	\end{figure}
-}
-\only<2>{
-	\begin{figure}
-		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-tree.png}
 	\end{figure}
 }}
 
@@ -363,14 +363,126 @@
 }
 
 \section{Benchmarks}
-\frame{\frametitle{Benchmarks - Results}
-		\begin{table}[h]
-	\begin{tabular}{r|r|r|r|r|r}
+\frame{\frametitle{Benchmarks - F2FS Results}
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={HDD 7200rpm, HDD 5400rpm, USB flash dive,flash SD Card},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(HDD 7200rpm, 27.7)(HDD 5400rpm, 18.3)(USB flash dive, 109)(flash SD Card,21.9)};
+		\addplot[color=red,fill]
+		coordinates {(HDD 7200rpm, 50)(HDD 5400rpm, 46.1)(USB flash dive, 18.6)(flash SD Card,10.9)};
+		\addplot[color=black,fill]
+		coordinates {(HDD 7200rpm, 8.7)(HDD 5400rpm, 9.7)(USB flash dive, 118)(flash SD Card, 11.6)};
+		\addplot[color=black]
+		coordinates {(HDD 7200rpm, 13.4)(HDD 5400rpm, 10.3)(USB flash dive, 14.5)(flash SD Card, 0.9)};
+		\legend{seq read, seq write, random read, random write}
+		\end{axis}
+		\end{tikzpicture}
+		%}
+		%\end{scaletikzpicturetowidth}
+		\caption{F2FS raw performance}
+		\label{fig:3:Different run lengths with and without transformations}
+	\end{figure}
+}
 
-	\end{tabular}
-	\label{tab:t100benchmark}
-	\caption{Benchmark}
-\end{table}
+\frame{\frametitle{Benchmarks - Results}
+\begin{figure}[h]
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=\textwidth,
+	height=0.45\textwidth,
+	axis x line=center,
+	axis y line=left,
+	x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+	ylabel={MB/s},
+	symbolic x coords={seq read, seq write, random read, random write},
+	x tick label style={font=\small,text width=1cm,align=center},
+	xtick=data,
+	enlargelimits=true,
+	legend style={
+		at={(0.5,1.2)},
+		anchor=north,
+		legend columns=-1,
+		/tikz/every even column/.append style={column sep=0.5cm}
+	},	
+	ymajorgrids=true,
+	grid style=dashed,
+	ybar
+	]
+	\addplot[color=blue,fill]
+	coordinates {(seq read, 49)(seq write, 84)(random read, 10.5)(random write,23.5)};
+	\addplot[color=red,fill]
+	coordinates {(seq read, 20.6)(seq write, 73.1)(random read, 9.1)(random write,18.7)};
+	\addplot[color=black,fill]
+	coordinates {(seq read, 112)(seq write, 19.5)(random read, 116)(random write, 18.6)};
+	\legend{HDD 7200rpm, HDD 5400rpm, USB flash dive}
+	\end{axis}
+	\end{tikzpicture}
+	%}
+	%\end{scaletikzpicturetowidth}
+	\caption{BtrFS raw performance}
+	\label{fig:3:Different run lengths with and without transformations}
+\end{figure}
+}
+
+\frame{\frametitle{Benchmarks - Results}
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={seq read, seq write, random read, random write},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(seq read, 48.6)(seq write, 54)(random read, 22.2)(random write,40)};
+		\addplot[color=red,fill]
+		coordinates {(seq read, 17.6)(seq write, 30.8)(random read, 18.6)(random write,15.5)};
+		\addplot[color=black,fill]
+		coordinates {(seq read, 50.4)(seq write, 18.7)(random read, 23.2)(random write, 10.3)};
+		\legend{RAID 0, RAID 1, RAID 5}
+		\end{axis}
+		\end{tikzpicture}
+		%}
+		%\end{scaletikzpicturetowidth}
+		\caption{BtrFS RAID performance}
+		\label{fig:3:Different run lengths with and without transformations}
+	\end{figure}
 }
 
 \frame{\frametitle{Literatur}
