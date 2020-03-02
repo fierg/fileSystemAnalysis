@@ -12,11 +12,19 @@
 \usepackage[]{csquotes}
 \usepackage{amsmath}
 \usepackage{outlines}
-\usepackage{graphicx}
-\usepackage{multimedia}
-\usepackage{media9}
+%\usepackage{graphicx}
+%\usepackage{multimedia}
+%\usepackage{media9}
 \usepackage{verbatim}
+%\usepackage{animate}
+\usepackage{xmpmulti}
+\usepackage{animate}
 
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots}
 
 \usepackage[backend=biber]{biblatex}
 \bibliography{thesis.bib}
@@ -25,14 +33,14 @@
 
 \hypersetup{
 	pdfauthor={Sven Fiergolla, Tobias Dahlem},
-	pdftitle={btrfs \& F2FS vs. ext4},
+	pdftitle={BtrFS \& F2FS},
 	pdfsubject={filesystems},
 	pdfkeywords={Not set}
 }
 
 \usepackage{hyperref}
 \author{Sven Fiergolla \& Tobias Dahlem}
-\title[]{btrfs \& F2FS vs. ext4}
+\title[]{btrFS \& F2FS}
 \subtitle[short version]{}
 \date{3. März 2020}
 %\institute[Uni Trier]{Universität Trier}
@@ -83,7 +91,7 @@
 \frame{\frametitle{btrfs - Einleitung}
 	\begin{outline}
 		\1 B-tree file system
-		\2 basiert auf \enquote{B-trees, shadowing, and clones} by Ohad Rodeh \cite{rodeh2008b}
+		\2 basiert auf \enquote{B-trees, shadowing, and clones} by Ohad Rodeh 
 		\visible<2->{\1 Introduced:	Linux kernel 2.6.29, March 2009}
 		\visible<3->{\1 Developed by: 	Facebook, Fujitsu, Fusion-IO, Intel, Linux Foundation, Netgear, Oracle Corporation, Red Hat, STRATO AG, SUSE, ...}
 	\end{outline}
@@ -92,12 +100,7 @@
 \frame{\frametitle{btrfs - Struktur}
 	\only<1>{
 		\begin{figure}
-		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-design.jpg}
-	\end{figure}
-}
-\only<2>{
-	\begin{figure}
-		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-tree.png}
+		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-design.png}
 	\end{figure}
 }}
 
@@ -202,14 +205,17 @@
 }
 
 \frame{\frametitle{btrfs - RAID}
-	\centering
-	Traditionelles RAID 0\\
-	\begin{figure}[h!]
-		\centering    
-		\movie[label=show3loop] {}{img/raid0.mp4}
-		\caption{caption}
-	\end{figure} 
+	\animategraphics[loop,controls,width=.95\linewidth]{2}{img/raid-ani1/btrfs-raid-ani1-}{0}{99}
 }
+\frame{\frametitle{btrfs - RAID}
+	\animategraphics[loop,controls,width=.95\linewidth]{2}{img/raid-ani2/btrfs-raid-ani2-}{0}{99}
+}
+
+%\begin{frame}
+%	\transduration<0-99>{0}
+%	\multiinclude[<+->][format=png, graphics={width=\textwidth}]{img/btrfs-raid-ani1}
+%\end{frame}
+
 
 
 
@@ -225,7 +231,7 @@
 		\visible<3->{
 		\1 Subvolumes
 		\2 eigene interne Dateisystem roots
-		\2 \emph{btrfs subvolume create <name>}
+		\2 \emph{btrfs subvolume create \emph{name}}
 		}
 	}
 	\end{outline}
@@ -356,27 +362,131 @@
 	
 }
 
-\section{benchmarks}
-\frame{\frametitle{benchmarks}
-	
+\section{Benchmarks}
+\frame{\frametitle{Benchmarks - F2FS Results}
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={HDD 7200rpm, HDD 5400rpm, USB flash dive,flash SD Card},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(HDD 7200rpm, 27.7)(HDD 5400rpm, 18.3)(USB flash dive, 109)(flash SD Card,21.9)};
+		\addplot[color=red,fill]
+		coordinates {(HDD 7200rpm, 50)(HDD 5400rpm, 46.1)(USB flash dive, 18.6)(flash SD Card,10.9)};
+		\addplot[color=black,fill]
+		coordinates {(HDD 7200rpm, 8.7)(HDD 5400rpm, 9.7)(USB flash dive, 118)(flash SD Card, 11.6)};
+		\addplot[color=black]
+		coordinates {(HDD 7200rpm, 13.4)(HDD 5400rpm, 10.3)(USB flash dive, 14.5)(flash SD Card, 0.9)};
+		\legend{seq read, seq write, random read, random write}
+		\end{axis}
+		\end{tikzpicture}
+		%}
+		%\end{scaletikzpicturetowidth}
+		\caption{F2FS raw performance}
+		\label{fig:3:Different run lengths with and without transformations}
+	\end{figure}
 }
-\frame{\frametitle{benchmarks - Results}
-		\begin{table}[h]
-	\begin{tabular}{r|r|r|r|r|r}
 
-	\end{tabular}
-	\label{tab:t100benchmark}
-	\caption{Benchmark}
-\end{table}
+\frame{\frametitle{Benchmarks - Results}
+\begin{figure}[h]
+	\begin{tikzpicture}
+	\begin{axis}[
+	width=\textwidth,
+	height=0.45\textwidth,
+	axis x line=center,
+	axis y line=left,
+	x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+	ylabel={MB/s},
+	symbolic x coords={seq read, seq write, random read, random write},
+	x tick label style={font=\small,text width=1cm,align=center},
+	xtick=data,
+	enlargelimits=true,
+	legend style={
+		at={(0.5,1.2)},
+		anchor=north,
+		legend columns=-1,
+		/tikz/every even column/.append style={column sep=0.5cm}
+	},	
+	ymajorgrids=true,
+	grid style=dashed,
+	ybar
+	]
+	\addplot[color=blue,fill]
+	coordinates {(seq read, 49)(seq write, 84)(random read, 10.5)(random write,23.5)};
+	\addplot[color=red,fill]
+	coordinates {(seq read, 20.6)(seq write, 73.1)(random read, 9.1)(random write,18.7)};
+	\addplot[color=black,fill]
+	coordinates {(seq read, 112)(seq write, 19.5)(random read, 116)(random write, 18.6)};
+	\legend{HDD 7200rpm, HDD 5400rpm, USB flash dive}
+	\end{axis}
+	\end{tikzpicture}
+	%}
+	%\end{scaletikzpicturetowidth}
+	\caption{BtrFS raw performance}
+	\label{fig:3:Different run lengths with and without transformations}
+\end{figure}
+}
+
+\frame{\frametitle{Benchmarks - Results}
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={seq read, seq write, random read, random write},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(seq read, 48.6)(seq write, 54)(random read, 22.2)(random write,40)};
+		\addplot[color=red,fill]
+		coordinates {(seq read, 17.6)(seq write, 30.8)(random read, 18.6)(random write,15.5)};
+		\addplot[color=black,fill]
+		coordinates {(seq read, 50.4)(seq write, 18.7)(random read, 23.2)(random write, 10.3)};
+		\legend{RAID 0, RAID 1, RAID 5}
+		\end{axis}
+		\end{tikzpicture}
+		%}
+		%\end{scaletikzpicturetowidth}
+		\caption{BtrFS RAID performance}
+		\label{fig:3:Different run lengths with and without transformations}
+	\end{figure}
 }
 
 \frame{\frametitle{Literatur}
-
 \printbibliography[]
 }
-
-
-
-
 
 \end{document}
