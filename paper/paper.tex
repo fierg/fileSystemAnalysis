@@ -1,17 +1,19 @@
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
-
 \usepackage[english,ngerman]{babel}
 \usepackage{microtype}
+\usepackage[]{csquotes}
+\usepackage[top=60pt,bottom=60pt,left=80pt,right=80pt]{geometry}
+\usepackage{natbib}
+\usepackage{graphicx}
+
+
 \title{Dateisystem Benchmark: Btrfs \& F2FS}
 \author{Sven Fiergolla \& Tobias Dahlem\\
 Betriebssysteme WiSe 2019/2020\\
 Universität Trier}
 \date{3. März 2020}
-\usepackage[top=60pt,bottom=60pt,left=80pt,right=80pt]{geometry}
 
-\usepackage{natbib}
-\usepackage{graphicx}
 
 \begin{document}
 
@@ -25,14 +27,18 @@ Im Rahmen des Adress-Mappings erfolgt die zuordnung der logischen Adressen der S
 Die Besonderheit der Garbage Collection ist, dass je nach Granularität in den löschbaren Einheit der Speicherblöcke mehrere Dateien gespeichert sein können. Nach der Änderung eines Teils der Daten aus einem Block, können also bestimmte Teile veraltet sein. Im Rahmen der Garbage Collection liegt also der Fokus darauf, veraltete Daten effizient auszusortieren ohne die I/O-Performance zu verschlechtern, um nicht unnötig Speicherplatz zu verbrauchen.
 Im Rahmen des Wear-Levelings wird versucht den Verschleiß aller Speicherzellen auf einem gleichmäßigem Stand zu halten, bedingt durch die beschränkte Haltbarkeit dieser Zellen \cite{CHUNG2009332}.
 
-Die meisten Dateisysteme werden dabei nicht direkt auf Flashspeicher zugeschnitten und führen diese Aufgaben nicht selbst aus, sondern verwenden dafür als Schnittstelle den sogenannten File Translation Layer (FTL) der die zuvor erwähnten Aufgaben umsetzt und dem Dateisystem eine definierte Schnittstelle zur Verfügung stellt ohne den Zugriff auf die ,,raw'' Speicherzellen zu gewähren \cite{lee2015f2fs}.
+Die meisten Dateisysteme werden dabei nicht direkt auf Flashspeicher zugeschnitten und führen diese Aufgaben nicht selbst aus, sondern verwenden dafür als Schnittstelle den sogenannten File Translation Layer (FTL) der die zuvor erwähnten Aufgaben umsetzt und dem Dateisystem eine definierte Schnittstelle zur Verfügung stellt ohne den Zugriff auf die \enquote{raw} Speicherzellen zu gewähren \cite{lee2015f2fs}.
 Im folgenden Stellen wir zwei aktuelle Dateisysteme vor und Evaluieren ihre Performance in einem Benchmark-Test. Zu den Dateisystemen zählen das Flash-Dateisystem F2FS und dem Copy-On-Write Dateisystem Btrfs.
 
 
 \section{Btrfs}
 \label{Btrfs}
+\par{
+Btrfs (B-tree FS) ist ein Copy-On-Write-Dateisystem (CoW), das seit 2007 für Linux und seit 2016, mit WinBtrfs für Windows 7 entwickelt wird. Die Kernstruktur von Btrfs ist ein Copy-on-write B-Baum und wurde ursprünglich von dem IBM-Forscher Ohad Rodeh auf der USENIX 2007 vorgestellt \cite{rodeh2008b}. Zusammen mit Chris Mason \cite{mason2007btrfs}, ein ehemaliger ReiserFS Entwickler half bei der Arbeit an dem Dateisystem welches fast ausschließlich solche B-Bäume verwendet, für Meta- und Nutzdateien sowie rekursiv zur Verfolgung der Speicherzuteilung der Bäume selber\cite{rodeh2013btrfs}. Seit 2009 ist Btrfs teil des Linux-Kernel und ist das Standard Dateisystem von MeeGo und sollte seit mehreren Versionen auch in Fedora als Standard Dateisystem verwendet werden, jedoch gab Red Hat 2017 bekannt, Btrfs nicht mehr zu unterstützen und langfristig zu entfernen.
+}
+\par{
 
-TODO
+}
 
 
 \newpage
@@ -57,5 +63,5 @@ Die Garbage Collection (GC) wird auf zwei Arten durchgeführt, On-Demand und im 
 \section{Benchmark}
 
 \bibliographystyle{plain}
-\bibliography{references}
+\bibliography{thesis}
 \end{document}
