@@ -427,7 +427,7 @@
 	ybar
 	]
 	\addplot[color=blue,fill]
-	coordinates {(HDD 7200rpm, 49)(HDD 5400rpm,20.6)(USB flash dive,112)};
+	coordinates {(HDD 7200rpm, 91)(HDD 5400rpm,80)(USB flash dive,112)};
 	\addplot[color=red,fill]
 	coordinates {(HDD 7200rpm, 84)(HDD 5400rpm, 73.1)(USB flash dive, 19.5)};
 	\addplot[color=black,fill]
@@ -467,11 +467,11 @@
 		ybar
 		]
 		\addplot[color=blue,fill]
-		coordinates {(RAID 0, 50.6)(RAID 1,17.6 )(RAID 5,50.4)};
+		coordinates {(RAID 0, 289)(RAID 1,17.6 )(RAID 5,50.4)};
 		\addplot[color=red,fill]
 		coordinates {(RAID 0, 54 )(RAID 1, 30.8)(RAID 5, 18.7)};
 		\addplot[color=black,fill]
-		coordinates {(RAID 0, 22.2)(RAID 1, 18.6)(RAID 5, 23.2)};
+		coordinates {(RAID 0, 58.8)(RAID 1, 18.6)(RAID 5, 23.2)};
 		\addplot[color=black]
 		coordinates {(RAID 0, 40)(RAID 1, 15.5)(RAID 5, 10.3)};
 		\legend{seq read, seq write, random read, random write}
@@ -505,11 +505,11 @@
 		ybar
 		]
 		\addplot[color=blue,fill]
-		coordinates {(f2fs flash drive, 178)(btrfs flash drive,112)(btrfs RAID 0, 48.6)};
+		coordinates {(f2fs flash drive, 178)(btrfs flash drive,112)(btrfs RAID 0, 289)};
 		\addplot[color=red,fill]
 		coordinates {(f2fs flash drive, 18.6)(btrfs flash drive, 19.5)(btrfs RAID 0, 54)};
 		\addplot[color=black,fill]
-		coordinates {(f2fs flash drive, 143)(btrfs flash drive, 116)(btrfs RAID 0, 22.2)};
+		coordinates {(f2fs flash drive, 143)(btrfs flash drive, 116)(btrfs RAID 0, 58)};
 		\addplot[color=black,]
 		coordinates {(f2fs flash drive, 15.8)(btrfs flash drive, 18.6)(btrfs RAID 0,40)};
 		\legend{seq read, seq write, random read, random write}
