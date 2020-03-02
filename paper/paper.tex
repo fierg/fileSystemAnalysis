@@ -6,6 +6,11 @@
 \usepackage[top=60pt,bottom=60pt,left=80pt,right=80pt]{geometry}
 \usepackage{natbib}
 \usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usepackage{pgfplots}
 
 
 \title{Dateisystem Benchmark: Btrfs \& F2FS}
@@ -37,9 +42,10 @@ Im folgenden Stellen wir zwei aktuelle Dateisysteme vor und Evaluieren ihre Perf
 Btrfs (B-tree FS) ist ein Copy-On-Write-Dateisystem (CoW), das seit 2007 für Linux und seit 2016, mit WinBtrfs für Windows 7 entwickelt wird. Die Kernstruktur von Btrfs ist ein Copy-on-write B-Baum und wurde ursprünglich von dem IBM-Forscher Ohad Rodeh auf der USENIX 2007 vorgestellt \cite{rodeh2008b}. Zusammen mit Chris Mason \cite{mason2007btrfs}, ein ehemaliger ReiserFS Entwickler half bei der Arbeit an dem Dateisystem welches fast ausschließlich solche B-Bäume verwendet, für Meta- und Nutzdateien sowie rekursiv zur Verfolgung der Speicherzuteilung der Bäume selber\cite{rodeh2013btrfs}. Seit 2009 ist Btrfs teil des Linux-Kernel und ist das Standard Dateisystem von MeeGo und sollte seit mehreren Versionen auch in Fedora als Standard Dateisystem verwendet werden, jedoch gab Red Hat 2017 bekannt, Btrfs nicht mehr zu unterstützen und langfristig zu entfernen.
 }
 \par{
-
-}
-
+Btrfs weist zahlreiche Gemeinsamkeiten mit ZFS auf, welches jedoch wegen seines Lizenzstatus für die Verwendung im Linux Kernel ungeeignet war. Beide Dyteisysteme basieren auf \emph{Copy-On-Write}, wobei eine Kopie erst dann angefertigt wird, wenn sie wird. Zudem implementieren sie beide, Volume-Management, Schutz vor Datenübertragungsfehlern durch Prüfsummen und integriertes RAID. Btrfs baut mit dem B-Baum auf einem zentralen Konzept von XFS oder Reiser4 auf. Mit btrfs-convert können bestehende ext3- und ext4- Dateisysteme in ein Btrfs Dateisystem konvertiert werden, sowie umgekehrt. Weitere Features sind der erweiterte Speicherbereich (264 Byte), effizientes Speichern kleiner Dateien und Verzeichnisse, dynamische Inodes
+Snapshots, Subvolumes und iDatenkompression auf Dateisystemebene.}
+\par{
+Das von btrfs implementierte RAID bietet gegenüber klassischen Hardware- oder Software-RAID Implementierungen den Vorteil, dass zwischen belegten und freien Datenblöcken unterschieden werden kann und somit bei der Rekonstruktion eines gespiegelten RAID-Volumens nur belegter Plattenplatz gespiegelt werden muss. Im Gegensatz zu klassischen RAID-Verfahren wird mit Hilfe von größeren Datenblöcken gearbeitet und es erfolgt beispielsweise im RAID 1 keine Spiegelung der Datenträger, sondern es wird sichergestellt, dass jeder Datenbereich auf wenigstens zwei Datenträgern abgelegt wird. So wird es möglich einen RAID 1 aus einer ungeraden Anzahl von Datenträgern unterschiedlicher Kapazität, unter voller Ausnutzung derer Kapazität, zu bilden. Kommt es unter Nutzung des RAID 1 zu \enquote{Bitrot} oder sonstigem schleichenden Verlust von Informationen, fällt dies dank dem Einsatz von Prüfsummen beim folgenden Zugriff auf und der Fehlerhafte Block wird verworfen und durch den gespiegelten Datenbereich eretzt. Btrfs bietet ebenfalls eine RAID 0 Implementierung, welche für sich für den Einsatz von nicht kritischen Daten eignet, da dennoch mehrere Disks zu einem Eigenständigen logischen Volume zusammengefügt werden können für sehr größe Dateien. Zudem bieten sie eine deutlich gesteigerte Geschwindigkeit, vorallem beim sequentiellen Lesen, jedoch auch bei den wahlfreien Zugriffen wie in Abbildung \ref{btrfs-raid} ersichtlich ist.}
 
 \newpage
 \section{F2FS}
@@ -60,7 +66,158 @@ Im Hauptspeicher sind die iNodes und Datenblöcke abgelegt, dabei wird hier im S
 Die Garbage Collection (GC) wird auf zwei Arten durchgeführt, On-Demand und im Hintergrund. On-Demand wird dabei verwendet, wenn nicht genügend Speicherplatz zum schreiben verfügbar ist. In diesem Sinne wird dann, mit einem Greedy Algorithmus, auf Basis der wenigsten gültigen Blöcken ein Opfersegment ausgesucht. Im Hintergrund wird die GC mit einen Kosten-Effizienten Algorithmus bei einer geringen Auslastung des Dateisystems automatisch ausgeführt. Dieser wählt Opfersegmente auf Grund ihres Alters und der Anzahl der gültigen Blöcke aus. Die Blöcke, welche noch gültig sind, werden dann wie bei einem normalen Schreiben wieder in die aktiven Segmente eingereiht und im Anschluss geschrieben. Die Besonderheit hierbei ist, dass wieder eine neue bessere Klassifizierung des hot/warm/cold-Schemas vorgenommen werden kann, da nun mehr Informationen über die Blöcke vorhanden sind \cite{lee2015f2fs}.
 
 
-\section{Benchmark}
+\section{Benchmarks}
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={HDD 7200rpm, HDD 5400rpm, USB flash dive,flash SD Card},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(HDD 7200rpm, 27.7)(HDD 5400rpm, 18.3)(USB flash dive, 178)(flash SD Card,21.9)};
+		\addplot[color=red,fill]
+		coordinates {(HDD 7200rpm, 50)(HDD 5400rpm, 46.1)(USB flash dive, 18.6)(flash SD Card,10.9)};
+		\addplot[color=black,fill]
+		coordinates {(HDD 7200rpm, 8.7)(HDD 5400rpm, 9.7)(USB flash dive, 143)(flash SD Card, 11.6)};
+		\addplot[color=black]
+		coordinates {(HDD 7200rpm, 13.4)(HDD 5400rpm, 10.3)(USB flash dive, 15.8)(flash SD Card, 0.9)};
+		\legend{seq read, seq write, random read, random write}
+		\end{axis}
+		\end{tikzpicture}
+		\label{f2fs-raw}
+		\caption{F2FS raw performance}
+	\end{figure}
+
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={HDD 7200rpm,HDD 5400rpm,USB flash dive},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(HDD 7200rpm, 91)(HDD 5400rpm,80)(USB flash dive,112)};
+		\addplot[color=red,fill]
+		coordinates {(HDD 7200rpm, 84)(HDD 5400rpm, 73.1)(USB flash dive, 19.5)};
+		\addplot[color=black,fill]
+		coordinates {(HDD 7200rpm, 10.5)(HDD 5400rpm, 9.1)(USB flash dive, 116)};
+		\addplot[color=black,]
+		coordinates {(HDD 7200rpm, 23.5)(HDD 5400rpm, 18.7)(USB flash dive, 18.6)};
+		\legend{seq read, seq write, random read, random write}
+		\end{axis}
+		\end{tikzpicture}
+		\label{btrfs-raw}
+		\caption{BtrFS raw performance}
+	\end{figure}
+
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={RAID 0, RAID 1, RAID 5},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(RAID 0, 289)(RAID 1,17.6 )(RAID 5,50.4)};
+		\addplot[color=red,fill]
+		coordinates {(RAID 0, 54 )(RAID 1, 30.8)(RAID 5, 18.7)};
+		\addplot[color=black,fill]
+		coordinates {(RAID 0, 58.8)(RAID 1, 18.6)(RAID 5, 23.2)};
+		\addplot[color=black]
+		coordinates {(RAID 0, 40)(RAID 1, 15.5)(RAID 5, 10.3)};
+		\legend{seq read, seq write, random read, random write}
+		\end{axis}
+		\end{tikzpicture}
+				\label{btrfs-raid}
+		\caption{BtrFS RAID performance}
+	\end{figure}
+
+	\begin{figure}[h]
+		\begin{tikzpicture}
+		\begin{axis}[
+		width=\textwidth,
+		height=0.45\textwidth,
+		axis x line=center,
+		axis y line=left,
+		x label style={at={(axis description cs:0.5,-0.1)},anchor=north},
+		ylabel={MB/s},
+		symbolic x coords={f2fs flash drive,btrfs flash drive,btrfs RAID 0},
+		x tick label style={font=\small,text width=1cm,align=center},
+		xtick=data,
+		enlargelimits=true,
+		legend style={
+			at={(0.5,1.2)},
+			anchor=north,
+			legend columns=-1,
+			/tikz/every even column/.append style={column sep=0.5cm}
+		},	
+		ymajorgrids=true,
+		grid style=dashed,
+		ybar
+		]
+		\addplot[color=blue,fill]
+		coordinates {(f2fs flash drive, 178)(btrfs flash drive,112)(btrfs RAID 0, 289)};
+		\addplot[color=red,fill]
+		coordinates {(f2fs flash drive, 18.6)(btrfs flash drive, 19.5)(btrfs RAID 0, 54)};
+		\addplot[color=black,fill]
+		coordinates {(f2fs flash drive, 143)(btrfs flash drive, 116)(btrfs RAID 0, 58)};
+		\addplot[color=black,]
+		coordinates {(f2fs flash drive, 15.8)(btrfs flash drive, 18.6)(btrfs RAID 0,40)};
+		\legend{seq read, seq write, random read, random write}
+		\end{axis}
+		\end{tikzpicture}
+				\label{f2fs-vs-btrfs}
+		\caption{F2FS vs. BtrFS vs. BtrFS RAID0}
+	\end{figure}
 
 \bibliographystyle{plain}
 \bibliography{thesis}

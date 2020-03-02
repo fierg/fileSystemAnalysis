@@ -1,0 +1,35 @@
+[sven@leDudes raid1]$ fio --name=benchmark --rw=read --direct=1 --ioengine=libaio --bs=128k --numjobs=1 --size=1G --runtime=300  --group_reporting --time_based
+benchmark: (g=0): rw=read, bs=(R) 128KiB-128KiB, (W) 128KiB-128KiB, (T) 128KiB-128KiB, ioengine=libaio, iodepth=1
+fio-3.18-12-g58d39
+Starting 1 process
+benchmark: Laying out IO file (1 file / 1024MiB)
+	
+^Cbs: 1 (f=1): [R(1)][13.0%][r=295MiB/s][r=2361 IOPS][eta 04m:22s]
+fio: terminating on signal 2
+
+benchmark: (groupid=0, jobs=1): err= 0: pid=18260: Mon Mar  2 22:08:01 2020
+  read: IOPS=2310, BW=289MiB/s (303MB/s)(10.9GiB/38755msec)
+    slat (usec): min=15, max=5782, avg=32.84, stdev=20.02
+    clat (usec): min=309, max=50086, avg=398.54, stdev=333.45
+     lat (usec): min=326, max=50118, avg=431.58, stdev=334.37
+    clat percentiles (usec):
+     |  1.00th=[  322],  5.00th=[  326], 10.00th=[  334], 20.00th=[  338],
+     | 30.00th=[  355], 40.00th=[  363], 50.00th=[  367], 60.00th=[  371],
+     | 70.00th=[  375], 80.00th=[  379], 90.00th=[  388], 95.00th=[  529],
+     | 99.00th=[ 1631], 99.50th=[ 1893], 99.90th=[ 2245], 99.95th=[ 3458],
+     | 99.99th=[12649]
+   bw (  KiB/s): min=212224, max=318976, per=100.00%, avg=296183.56, stdev=13525.28, samples=77
+   iops        : min= 1658, max= 2492, avg=2313.92, stdev=105.69, samples=77
+  lat (usec)   : 500=94.54%, 750=3.23%, 1000=0.28%
+  lat (msec)   : 2=1.68%, 4=0.24%, 10=0.02%, 20=0.01%, 50=0.01%
+  lat (msec)   : 100=0.01%
+  cpu          : usr=0.83%, sys=8.28%, ctx=90283, majf=0, minf=43
+  IO depths    : 1=100.0%, 2=0.0%, 4=0.0%, 8=0.0%, 16=0.0%, 32=0.0%, >=64=0.0%
+     submit    : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     complete  : 0=0.0%, 4=100.0%, 8=0.0%, 16=0.0%, 32=0.0%, 64=0.0%, >=64=0.0%
+     issued rwts: total=89554,0,0,0 short=0,0,0,0 dropped=0,0,0,0
+     latency   : target=0, window=0, percentile=100.00%, depth=1
+
+Run status group 0 (all jobs):
+   READ: bw=289MiB/s (303MB/s), 289MiB/s-289MiB/s (303MB/s-303MB/s), io=10.9GiB (11.7GB), run=38755-38755msec
+
