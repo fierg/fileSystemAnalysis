@@ -26,7 +26,7 @@
 \usetikzlibrary{positioning}
 \usepackage{pgfplots}
 
-\usepackage[backend=biber]{biblatex}
+\usepackage[backend=bibtex]{biblatex}
 \bibliography{thesis.bib}
 \setbeamertemplate{bibliography item}{}
 \nocite{*}
@@ -40,7 +40,7 @@
 
 \usepackage{hyperref}
 \author{Sven Fiergolla \& Tobias Dahlem}
-\title[]{btrFS \& F2FS}
+\title[]{BtrFS \& F2FS}
 \subtitle[short version]{}
 \date{3. März 2020}
 %\institute[Uni Trier]{Universität Trier}
@@ -85,10 +85,10 @@
 \end{itemize}
 }
 
-\section{btrfs}
+\section{BtrFS}
 {\usebackgroundtemplate{%
 		\hspace*{9cm}\includegraphics[width=.3\paperwidth,height=.3\paperheight]{img/btrfs.jpg}} 
-\frame{\frametitle{btrfs - Einleitung}
+\frame{\frametitle{BtrFS - Einleitung}
 	\begin{outline}
 		\1 B-tree file system
 		\2 basiert auf \enquote{B-trees, shadowing, and clones} by Ohad Rodeh 
@@ -97,14 +97,14 @@
 	\end{outline}
 }
 
-\frame{\frametitle{btrfs - Struktur}
+\frame{\frametitle{BtrFS - Struktur}
 	\only<1>{
 		\begin{figure}
 		\includegraphics[width=.8\textwidth, height=.7\textheight]{img/btrfs-design.png}
 	\end{figure}
 }}
 
-\frame{\frametitle{btrfs - Copy on Write (CoW)}
+\frame{\frametitle{BtrFS - Copy on Write (CoW)}
 	\only<1>{
 		\centering
 		Initiale Datei
@@ -129,21 +129,21 @@
 		\end{figure}}
 }
 
-\frame{\frametitle{btrfs - Snapshots}
+\frame{\frametitle{BtrFS - Snapshots}
 	\begin{figure}
 		\includegraphics[width=.9\textwidth, height=.5\textheight]{img/btrfs-snapshot.png}
 	\end{figure}
 }
 
-\frame{\frametitle{btrfs - Data \& Metadata Checksum}
+\frame{\frametitle{BtrFS - Data \& Metadata Checksum}
 		\begin{figure}
 		\includegraphics[width=.9\textwidth, height=.5\textheight]{img/bitrot.jpg}
 	\end{figure}
 }
 
-\frame{\frametitle{btrfs - Data \& Metadata Checksum}
+\frame{\frametitle{BtrFS - Data \& Metadata Checksum}
 	\begin{outline}
-		\1 btrfs generiert für alle Dateien und Metadaten eine Prüfumme
+		\1 BtrFS generiert für alle Dateien und Metadaten eine Prüfumme
 		\visible<2->{\1 Beim lesen eines defekten Extent, wird die Inkonsistenz der Prüfsummen festgestellt}
 		\visible<3->{\2 mit Mirroring, korrekte Kopie wird gelesen und Defekt wird ersetzt
 					 \2 ohne Mirroring, Extent wird verworfen und ein \emph{EIO} zurückgegeben}
@@ -186,7 +186,7 @@
 
 }
 
-\frame{\frametitle{btrfs - RAID}
+\frame{\frametitle{BtrFS - RAID}
 	\begin{outline}
 		\1 RAID 0 (keine Parität) \&  1,5 (einfache Parität) \&  6 (mehrfache Parität)
 		\visible<2->{\1 Keine einheitliche Plattengröße}
@@ -204,10 +204,10 @@
 	\verb|btrfs device add /dev/<disk y> /<mount point>|
 }
 
-\frame{\frametitle{btrfs - RAID}
+\frame{\frametitle{BtrFS - RAID}
 	\animategraphics[loop,controls,width=.95\linewidth]{2}{img/raid-ani1/btrfs-raid-ani1-}{0}{99}
 }
-\frame{\frametitle{btrfs - RAID}
+\frame{\frametitle{BtrFS - RAID}
 	\animategraphics[loop,controls,width=.95\linewidth]{2}{img/raid-ani2/btrfs-raid-ani2-}{0}{99}
 }
 
@@ -219,10 +219,10 @@
 
 
 
-\frame{\frametitle{btrfs - Weitere Features}
+\frame{\frametitle{BtrFS - Weitere Features}
 	\begin{outline}
 		\1 Snapshots, read-only Snapshots
-		\1 btrfs RAID (raid0, raid1, raid10, raid5 \& raid6)
+		\1 BtrFS RAID (raid0, raid1, raid10, raid5 \& raid6)
 		\visible<2->{
 		\1 Komprimierung auf Filesystem Ebene
 		\2 verfügbare Algorithmen: \emph{zlib, lzo \& zstd}
@@ -237,7 +237,7 @@
 	\end{outline}
 }
 
-\frame{\frametitle{btrfs - Nachteile}
+\frame{\frametitle{BtrFS - Nachteile}
 	\begin{outline}
 		\1 $B^+$ Baum kann unbalanciert werden
 		\2 manuelles rebalancieren
